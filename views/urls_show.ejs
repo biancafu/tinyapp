@@ -19,10 +19,22 @@
         <h5 class="card-title">TinyURL for: <%= longURL %></h5>
         <p class="card-text">
           Short URL ID: <a href="/u/<%= id %>"><%= id %></a>
-        </p>
+        </p>       
       </div>
-      <div class="card-footer text-muted"></div>
+      <div class="card-footer text-muted">
+        <h4 class="card-title">Edit</h4>
+        <form method="POST" action="/urls/<%= id %>">
+        <label for="longURL">New URL:</label>
+        <input 
+          name="longURL" 
+          type="text" 
+          value="<%= longURL %>"
+        />
+        <button type="submit" class="btn btn-primary">Submit</button>
+      </form>
+      </div>
     </div>
+
     <!-- Bootstrap JS -->
     <script
       src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
