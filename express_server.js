@@ -31,6 +31,12 @@ app.post("/urls", (req, res) => {
   res.redirect(longURL); 
 });
 
+app.post("/urls/:id/delete", (req, res) => {
+  const id = req.params.id;
+  console.log("deleting", id, urlDatabase[id]);
+  delete urlDatabase[id];
+  res.redirect("/urls");
+});
 app.get("/u/:id", (req, res) => {
   // const longURL = ...
   const longURL = urlDatabase[req.params.id];
