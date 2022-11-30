@@ -30,6 +30,14 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new", templateVars);
 });
 
+app.get("/register", (req, res) => {
+  res.render("urls_register");
+});
+
+app.post("/register", (req, res) => {
+
+});
+
 app.post("/login", (req, res) => {
   const name = req.body.username;
   console.log("login as", name);
