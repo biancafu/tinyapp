@@ -31,11 +31,14 @@ app.get("/urls/new", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
+  console.log("going to register page");
   res.render("urls_register");
 });
 
 app.post("/register", (req, res) => {
-
+  const email = req.body.email;
+  const password = req.body.password;
+  console.log("email:", email, " password:", password);
 });
 
 app.post("/login", (req, res) => {
