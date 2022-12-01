@@ -27,16 +27,23 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav">
-        <a class="nav-item nav-link" href="/urls">My URLs</a>
-        <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+      <div class="navbar-nav" style="width: 100%;
+      justify-content: space-between;"
+  >
+        <div class="d-flex">
+          <a class="nav-item nav-link" href="/urls">My URLs</a>
+          <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+        </div>
         <% if(user === undefined){ %>
-          <a id="login" class="nav-link" href="/login">Login</a>
-          <a id="register" class="nav-link" href="/register">Register</a>
+          <div class="d-flex">
+            <a class="nav-link" href="/login">Login</a>
+            <a  class="nav-link" href="/register">Register</a>
+          </div>
+    
         <% } else{ %>  
           <form method="POST" action="/logout">
-            <div id="email">Logged in as: <%= user.email %>
-            <button id="logout" type="submit" class="btn btn-outline-dark">Logout</button>
+            <div >Logged in as: <%= user.email %>
+            <button  type="submit" class="btn btn-outline-dark">Logout</button>
             </div>
           </form>
         <% } %>    

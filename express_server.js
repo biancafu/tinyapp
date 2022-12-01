@@ -6,8 +6,14 @@ const PORT = 8080; // default port 8080
 app.set("view engine", "ejs");
 
 const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
+  b6UTxQ: {
+    longURL: "https://www.tsn.ca",
+    userID: "aJ48lW",
+  },
+  i3BoGr: {
+    longURL: "https://www.google.ca",
+    userID: "aJ48lW",
+  },
 };
 
 const users = {
@@ -35,8 +41,27 @@ app.get("/", (req, res) => {
 //homepage, displaying urls
 app.get("/urls", (req, res) => {
   const id = req.cookies["user_id"];
-  const templateVars = {urls : urlDatabase, user : users[id]};
+  if (id === undefined) {
+    res.send("Error: user not logged in");
+    return;
+  }
+  const templateVars = { urls : urlsForUser(id), user : users[id]};
+  console.log(urlsForUser(id));
   res.render("urls_index", templateVars);
+});
+
+//adding new url
+app.post("/urls", (req, res) => {
+  const id = req.cookies["user_id"];
+  if (id === undefined) {
+    console.log("please sign in first");
+    res.send("Error: please sign in first");
+    return;
+  }
+  console.log(req.body); // Log the POST request body to the console
+  const longURL = req.body.longURL;
+  urlDatabase[generateRandomString()] = { longURL : longURL, userID : id};
+  res.redirect(longURL); 
 });
 
 //create new url
@@ -45,8 +70,14 @@ app.get("/urls/new", (req, res) => {
   const templateVars = {
     user : users[id]
   };
+  if (id === undefined) {
+    console.log("please login first (get)");
+    res.redirect("/login");
+    return;
+  }
   res.render("urls_new", templateVars);
 });
+
 
 //register page
 app.get("/register", (req, res) => {
@@ -54,6 +85,11 @@ app.get("/register", (req, res) => {
   const templateVars = {
     user : users[id]
   };
+  if (id !== undefined) {
+    console.log("already registered");
+    res.redirect("/urls");
+    return;
+  }
   console.log("going to register page");
   res.render("urls_register", templateVars);
 });
@@ -84,6 +120,11 @@ app.get("/login", (req, res) => {
   const templateVars = {
     user : users[id]
   };
+  if (id !== undefined) {
+    console.log("already signed in");
+    res.redirect("/urls");
+    return;
+  }
   res.render("urls_login", templateVars);
 });
 
@@ -113,25 +154,34 @@ app.post("/logout", (req, res) => {
   res.redirect("/login");
 });
 
-app.post("/urls", (req, res) => {
-  console.log(req.body); // Log the POST request body to the console
-  const longURL = req.body.longURL;
-  urlDatabase[generateRandomString()] = longURL;
-  res.redirect(longURL); 
-});
 
 app.post("/urls/:id/delete", (req, res) => {
   const id = req.params.id;
+  const user_id = req.cookies["user_id"];
+  if (user_id === undefined) {
+    //user not longged int
+    res.send("Error: please login first!");
+    return;
+  } else if (urlDatabase[id] === undefined) {
+    //id doesn't exist
+    res.send("Error: id does not exist");
+    return;
+  } else if (urlAccessDenied(id, user_id)) {
+    //user doens't own url
+    res.send("Error: You don't have permission to delete this url");
+    return;
+  }
   console.log("deleting", id, urlDatabase[id]);
   delete urlDatabase[id];
   res.redirect("/urls");
 });
 
-
+//edit
 app.post("/urls/:id", (req, res) => {
+  const id = req.params.id;
   console.log("new URL:", req.body);
   const longURL = req.body.longURL;
-  urlDatabase[req.params.id] = longURL;
+  urlDatabase[id] = {longURL, userID : req.cookies["user_id"]};
   res.redirect(`/urls`);
 });
 
@@ -141,8 +191,22 @@ app.get("/u/:id", (req, res) => {
 });
 
 app.get("/urls/:id", (req, res) => {
-  const uesr_id = req.cookies["user_id"];
-  const templateVars = {id : req.params.id, longURL : urlDatabase[req.params.id], user : users[user_id] };
+  const id = req.params.id;
+  const user_id = req.cookies["user_id"];
+  const urls = urlsForUser(user_id);
+  if (user_id === undefined) {
+    res.send("Error message: user not logged in");
+    return;
+  } else if (urlAccessDenied(id, user_id)) {
+    //url saved by other user
+    res.send("You don't have permission to view this url");
+    return;
+  } else if (urlDatabase[id] === undefined) {
+    //invalid url
+    res.send("Error: id does not exist");
+    return;
+  }
+  const templateVars = {id : id, longURL : urlDatabase[id]["longURL"], user : users[user_id] };
   res.render("urls_show", templateVars);
 })
 
@@ -173,3 +237,24 @@ const getUserByEmail = (newEmail) => {
   }
   return null;
 };
+
+const urlsForUser = (id) => {
+  let urls = {};
+  for (const key in urlDatabase) {
+    const userID = urlDatabase[key].userID;
+    if (userID === id) {
+      urls[key] = urlDatabase[key].longURL;
+    }
+  }
+  return urls;
+};
+
+const urlAccessDenied = (id, user_id) => {
+  //return true if u don't have permission to this url
+  const urls = urlsForUser(user_id);
+  //user doesn't have url saved in this id
+  const condition1 = !Object.keys(urls).includes(id);
+  //this id is in urlDatabase under other user_id
+  const condition2 = Object.keys(urlDatabase).includes(id);
+  return condition1 && condition2;
+}
