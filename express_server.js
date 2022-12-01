@@ -32,12 +32,14 @@ app.get("/", (req, res) => {
   res.send("Hello!");
 });
 
+//homepage, displaying urls
 app.get("/urls", (req, res) => {
   const id = req.cookies["user_id"];
   const templateVars = {urls : urlDatabase, user : users[id]};
   res.render("urls_index", templateVars);
 });
 
+//create new url
 app.get("/urls/new", (req, res) => {
   const id = req.cookies["user_id"];
   const templateVars = {
@@ -46,19 +48,19 @@ app.get("/urls/new", (req, res) => {
   res.render("urls_new", templateVars);
 });
 
+//register page
 app.get("/register", (req, res) => {
   console.log("going to register page");
   res.render("urls_register");
 });
 
+//registering new user
 app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
   if (email === "" || !password === "") {
-    res.status(400);
-    res.send("empty email/password!")
-  }
-  if (checkEmail(email) !== null) {
+    res.status(400).send("empty email/password!");
+  } else if (getUserByEmail(email) !== null) {
     res.status(400);
     res.send("This email has been registered!");
   }
@@ -70,10 +72,16 @@ app.post("/register", (req, res) => {
   
 });
 
+//login page
+app.get("/login", (req, res) => {
+  res.render("urls_login");
+});
+
+//check if login was successful
 app.post("/login", (req, res) => {
-  const id = req.cookies["user_id"];
-  const user = users[id];
-  console.log("login as", user);
+  const email = req.body.email;
+  const password = req.body.password;
+  console.log("login as", email, "password", password);
   res.redirect("/urls");
 });
 
@@ -137,7 +145,7 @@ const generateRandomString = () => {
     return result;
 };
 
-const checkEmail = (newEmail) => {
+const getUserByEmail = (newEmail) => {
   for (const user in users) {
     if (users[user].email === newEmail) {
       return user;
