@@ -1,5 +1,7 @@
 const express = require("express");
 const cookieParser = require('cookie-parser');
+const bcrypt = require("bcryptjs");
+
 const app = express();
 const PORT = 8080; // default port 8080
 
@@ -16,18 +18,7 @@ const urlDatabase = {
   },
 };
 
-const users = {
-  userRandomID: {
-    id: "userRandomID",
-    email: "user@example.com",
-    password: "purple-monkey-dinosaur",
-  },
-  user2RandomID: {
-    id: "user2RandomID",
-    email: "user2@example.com",
-    password: "dishwasher-funk",
-  },
-};
+const users = {};
 
 
 app.use(express.urlencoded({ extended: true }));
@@ -98,7 +89,9 @@ app.get("/register", (req, res) => {
 app.post("/register", (req, res) => {
   const email = req.body.email;
   const password = req.body.password;
-  if (email === "" || !password === "") {
+  const hashedPassword = bcrypt.hashSync(password); //default round = 10
+
+  if (email === "" || password === "") {
     res.status(400).send("empty email/password!");
     return;
   } else if (getUserByEmail(email) !== null) {
@@ -107,7 +100,7 @@ app.post("/register", (req, res) => {
     return;
   }
   const id = generateRandomString();
-  users[id] = { id, email, password };
+  users[id] = { id, email, password : hashedPassword };
   console.log("new user: ", users[id]);
   res.cookie("user_id", id);
   res.redirect("/urls");
@@ -133,15 +126,16 @@ app.post("/login", (req, res) => {
   const email = req.body.email;
   const inputPassword = req.body.password;
   const user = getUserByEmail(email);
-  console.log(user);
+  const hashedPassword = user.password;
+
   if (user === null) {
     res.status(403).send("User cannot be found");
     return;
-  } else if (user.password !== inputPassword) {
+  } else if (!bcrypt.compareSync(inputPassword, hashedPassword)) {
     res.status(403).send("Invalid password");
     return;
   }
-  console.log("login as", email, "password", inputPassword);
+  console.log("login as", email, "password", inputPassword, "hash", hashedPassword);
   res.cookie("user_id", user.id);
   res.redirect("/urls");
 });
