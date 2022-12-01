@@ -50,8 +50,12 @@ app.get("/urls/new", (req, res) => {
 
 //register page
 app.get("/register", (req, res) => {
+  const id = req.cookies["user_id"];
+  const templateVars = {
+    user : users[id]
+  };
   console.log("going to register page");
-  res.render("urls_register");
+  res.render("urls_register", templateVars);
 });
 
 //registering new user
@@ -60,9 +64,11 @@ app.post("/register", (req, res) => {
   const password = req.body.password;
   if (email === "" || !password === "") {
     res.status(400).send("empty email/password!");
+    return;
   } else if (getUserByEmail(email) !== null) {
     res.status(400);
     res.send("This email has been registered!");
+    return;
   }
   const id = generateRandomString();
   users[id] = { id, email, password };
@@ -74,14 +80,28 @@ app.post("/register", (req, res) => {
 
 //login page
 app.get("/login", (req, res) => {
-  res.render("urls_login");
+  const id = req.cookies["user_id"];
+  const templateVars = {
+    user : users[id]
+  };
+  res.render("urls_login", templateVars);
 });
 
 //check if login was successful
 app.post("/login", (req, res) => {
   const email = req.body.email;
-  const password = req.body.password;
-  console.log("login as", email, "password", password);
+  const inputPassword = req.body.password;
+  const user = getUserByEmail(email);
+  console.log(user);
+  if (user === null) {
+    res.status(403).send("User cannot be found");
+    return;
+  } else if (user.password !== inputPassword) {
+    res.status(403).send("Invalid password");
+    return;
+  }
+  console.log("login as", email, "password", inputPassword);
+  res.cookie("user_id", user.id);
   res.redirect("/urls");
 });
 
@@ -90,7 +110,7 @@ app.post("/logout", (req, res) => {
   const user = users[id];
   console.log("logout as", user);
   res.clearCookie("user_id");
-  res.redirect("/urls");
+  res.redirect("/login");
 });
 
 app.post("/urls", (req, res) => {
@@ -146,9 +166,9 @@ const generateRandomString = () => {
 };
 
 const getUserByEmail = (newEmail) => {
-  for (const user in users) {
-    if (users[user].email === newEmail) {
-      return user;
+  for (const id in users) {
+    if (users[id].email === newEmail) {
+      return users[id];
     }
   }
   return null;

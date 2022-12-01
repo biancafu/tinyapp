@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
     <!-- Bootstrap CSS -->
     <link
       rel="stylesheet"
@@ -8,31 +14,37 @@
       integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
       crossorigin="anonymous"
     />
+
     <title>TinyApp Login</title>
   </head>
-
+  </head>
+  <%- include('partials/_header') %>
   <body>
-    <div class="card text-center">
-      <div class="card-header"></div>
-      <div class="card-body">
-        <h4 class="card-title">Login Page</h4>
-        <form method="POST" action="/login">
-          <label for="email">Email:</label>
-          <input 
+    <main style="margin: 1em;">
+      <h3>Login</h3>
+      <form class="form-inline" method="POST" action="/login">
+        <div class="form-group mb-2">
+          <label for="email">Email address</label>
+          <input
+            class="form-control"
             name="email" 
             type="email" 
-          /> 
-          <br>
-          <label for="password">Password:</label>
-          <input 
-            name="password" 
-            type="password" 
+            placeholder="Enter email"
+            style="width: 300px; margin: 1em"
           />
           <br>
-        <button type="submit" class="btn btn-primary">Login</button>
+          <label for="password">Password </label>
+          <input
+            class="form-control"
+            name="password" 
+            type="password" 
+            placeholder="Password"
+            style="width: 300px; margin: 1em"
+          />
+          <button type="submit" class="btn btn-primary">Login</button>
+        </div>
       </form>
-      </div>
-    </div>
+    </main>
 
     <!-- Bootstrap JS -->
     <script
