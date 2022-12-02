@@ -42,17 +42,17 @@ $ node express_server.js
 - partials
   - _head.ejs - header for all pages
 - test
-  - helpersTest.js - test file for functions in helpers.js
+  - helpersTest.js - test file for functions in helpers.jsu
 ## Final Product
 Register Page should look like this:
-!["Register page"](https://github.com/biancafu/tinyapp/blob/master/register%20account.png)
+!["Register page"](https://github.com/biancafu/tinyapp/blob/master/pics/register%20account.png)
 Login Page should look like this:
-!["Login page"](https://github.com/biancafu/tinyapp/blob/master/log%20in.png)
+!["Login page"](https://github.com/biancafu/tinyapp/blob/master/pics/log%20in.png)
 Urls (will only show urls if user is logged in):
-!["urls page"](https://github.com/biancafu/tinyapp/blob/master/urls%20page.png)
+!["urls page"](https://github.com/biancafu/tinyapp/blob/master/pics/urls%20page.png)
 Create new url:
-!["new url page"](https://github.com/biancafu/tinyapp/blob/master/adding%20new%20url.png)
+!["new url page"](https://github.com/biancafu/tinyapp/blob/master/pics/adding%20new%20url.png)
 Url details:
-!["url detail page"](https://github.com/biancafu/tinyapp/blob/master/url%20detail%20page.png)
+!["url detail page"](https://github.com/biancafu/tinyapp/blob/master/pics/url%20detail%20page.png)
 
 
