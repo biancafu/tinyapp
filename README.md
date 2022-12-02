@@ -45,14 +45,14 @@ $ node express_server.js
   - helpersTest.js - test file for functions in helpers.jsu
 ## Final Product
 Register Page should look like this:
-!["Register page"](https://github.com/biancafu/tinyapp/blob/master/pics/register%20account.png)
+!["Register page"](https://github.com/biancafu/tinyapp/blob/master/docs/register%20account.png)
 Login Page should look like this:
-!["Login page"](https://github.com/biancafu/tinyapp/blob/master/pics/log%20in.png)
+!["Login page"](https://github.com/biancafu/tinyapp/blob/master/docs/log%20in.png)
 Urls (will only show urls if user is logged in):
-!["urls page"](https://github.com/biancafu/tinyapp/blob/master/pics/urls%20page.png)
+!["urls page"](https://github.com/biancafu/tinyapp/blob/master/docs/urls%20page.png)
 Create new url:
-!["new url page"](https://github.com/biancafu/tinyapp/blob/master/pics/adding%20new%20url.png)
+!["new url page"](https://github.com/biancafu/tinyapp/blob/master/docs/adding%20new%20url.png)
 Url details:
-!["url detail page"](https://github.com/biancafu/tinyapp/blob/master/pics/url%20detail%20page.png)
+!["url detail page"](https://github.com/biancafu/tinyapp/blob/master/docs/url%20detail%20page.png)
 
 
